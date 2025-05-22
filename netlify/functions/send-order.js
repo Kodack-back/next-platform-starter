@@ -10,10 +10,10 @@ exports.handler = async function(event, context) {
   console.log('Function started');
   
   try {
-    if (event.httpMethod !== "POST") {
-      console.log('Method not allowed');
-      return { statusCode: 405, body: "Method Not Allowed" };
-    }
+    //if (event.httpMethod !== "POST") {
+    //  console.log('Method not allowed');
+    //  return { statusCode: 405, body: "Method Not Allowed" };
+    //} 
 
     console.log('Getting Cart data...');
     
