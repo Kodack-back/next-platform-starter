@@ -45,7 +45,7 @@ cartData.forEach(item => {
   cartMessage += `• ${item.name} - ${item.price_variant}฿\n`;
 });
     
-    cartMessage += `\n*Общая сумма: ${total}฿*`;
+    //cartMessage += `\n*Общая сумма: ${total}฿*`;
 
     let orderMessage = "📋 *Данные заказа:*\n\n";
     orderMessage += `*Адрес доставки:* ${order?.delivery_address || 'Не указан'}\n`;
