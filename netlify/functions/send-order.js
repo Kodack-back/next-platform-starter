@@ -32,7 +32,7 @@ exports.handler = async function(event, context) {
     // Получаем последнюю запись из Order
     console.log('Getting Order data...');
     const { data: orderData, error: orderError } = await supabase
-      .from('Order')
+      .from('user_coment')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(1);
