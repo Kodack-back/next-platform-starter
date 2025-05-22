@@ -38,14 +38,12 @@ exports.handler = async function(event, context) {
 
     const order = orderData[0];
 
-    let cartMessage = "🛒 *Товары в заказе:*\n\n";
-    let total = 0;
-    
-    cartData.forEach(item => {
-      const itemTotal = item.quantity * item.priceVariant;
-      cartMessage += `• ${item.name} - ${item.quantity} шт. x ${item.priceVariant}฿ = ${itemTotal}฿\n`;
-      total += itemTotal;
-    });
+    let cartMessage = "🛒 *Новый заказ!*\n\n";
+cartMessage += "*Товары:*\n";
+
+cartData.forEach(item => {
+  cartMessage += `• ${item.name} - ${item.price_variant}฿\n`;
+});
     
     cartMessage += `\n*Общая сумма: ${total}฿*`;
 
