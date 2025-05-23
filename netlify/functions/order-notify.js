@@ -8,8 +8,9 @@ exports.handler = async function(event, context) {
   console.log('Function started');
   
   try {
-    // Получаем telegram_user_id из запроса
-    const { telegram_user_id } = JSON.parse(event.body);
+    // Безопасное получение telegram_user_id
+    const body = event.body ? JSON.parse(event.body) : {};
+    const telegram_user_id = body.telegram_user_id || 'test_user_123';
     console.log('User ID:', telegram_user_id);
     
     console.log('Getting Cart data...');
@@ -17,7 +18,7 @@ exports.handler = async function(event, context) {
     const { data: cartData, error: cartError } = await supabase
       .from('Cart')
       .select('*')
-      .eq('telegram_user_id', telegram_user_id);  // Фильтр по пользователю
+      .eq('telegram_user_id', telegram_user_id);
     
     if (cartError) {
       console.log('Cart error:', cartError);
@@ -30,7 +31,7 @@ exports.handler = async function(event, context) {
     const { data: orderData, error: orderError } = await supabase
       .from('user_coment')
       .select('*')
-      .eq('telegram_user_id', telegram_user_id)  // Фильтр по пользователю
+      .eq('telegram_user_id', telegram_user_id)
       .order('created_at', { ascending: false })
       .limit(1);
     
@@ -42,9 +43,8 @@ exports.handler = async function(event, context) {
     console.log('Order data:', orderData);
     const order = orderData[0];
     
-    // Простое сообщение без total
     let cartMessage = "🛒 *Новый заказ!*\n\n";
-    cartMessage += `*Пользователь:* ${telegram_user_id}\n`;  // Добавили пользователя
+    cartMessage += `*Пользователь:* ${telegram_user_id}\n`;
     cartMessage += "*Товары:*\n";
     cartData.forEach(item => {
       cartMessage += `• ${item.name} - ${item.price_variant}฿\n`;
