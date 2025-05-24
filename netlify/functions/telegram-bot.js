@@ -4,16 +4,27 @@ const supabase = createClient(
  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnanRoYXd6aHlneWN5eWZidmRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3OTQ4NzUsImV4cCI6MjA2MjM3MDg3NX0._9-RtrQNoowkXKscujLv3BtEsc82hfoJQy2BuVt2DR8'
 );
 
-const BOT_TOKEN = process.env.BOT_TOKEN; // Добавить в переменные окружения
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
 exports.handler = async (event, context) => {
  try {
    const update = JSON.parse(event.body);
    
-   // Если пользователь написал /start
-   if (update.message && update.message.text === '/start') {
+   // ОТЛАДКА - что получаем
+   console.log('Received update:', JSON.stringify(update, null, 2));
+   console.log('BOT_TOKEN exists:', !!BOT_TOKEN);
+   
+   if (update.message) {
+     console.log('Message text received:', update.message.text);
+     console.log('Message type:', typeof update.message.text);
+   }
+   
+   // Если пользователь написал /start (расширенное условие)
+   if (update.message && (update.message.text === '/start' || update.message.text?.startsWith('/start'))) {
      const user = update.message.from;
      const chatId = update.message.chat.id;
+     
+     console.log('Processing start command for user:', user.id);
      
      // Сохраняем пользователя в базу
      const { data, error } = await supabase
@@ -32,6 +43,7 @@ exports.handler = async (event, context) => {
      
      // Создаем персональную ссылку
      const personalUrl = `https://coffee-shop-app-um48rx.flutterflow.app/?user_id=${user.id}`;
+     console.log('Generated URL:', personalUrl);
      
      // Отправляем сообщение с inline кнопкой
      const telegramResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -50,6 +62,8 @@ exports.handler = async (event, context) => {
        })
      });
      
+     const responseData = await telegramResponse.json();
+     console.log('Telegram API response:', responseData);
      console.log('Message sent to user:', user.id);
    }
    
