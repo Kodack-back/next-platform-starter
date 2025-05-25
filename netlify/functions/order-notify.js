@@ -56,7 +56,7 @@ exports.handler = async function(event, context) {
     orderMessage += `*Комментарий:* ${order?.comments || 'Нет'}`;
     
     const botToken = process.env.BOT_TOKEN;
-    const chatId = "7757484948";
+    const chatId = "7121076642";
     
     console.log('Sending to Telegram...');
     
