@@ -23,7 +23,7 @@ exports.handler = async (event, context) => {
   
   console.log('User ID:', telegram_user_id);
 
-  const supabaseUrl = 'https://ygmhyinqwgkjkhixisrb.supabase.co';
+  const supabaseUrl = 'https://dgjthawzhygycyyfbvdh.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbWh5aW5xd2dramtoaXhpc3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ4MTA2MzAsImV4cCI6MjAzMDM4NjYzMH0.LOy5s4mLU3xf5jK2sBfhm6Fk3r8CaO8BPhcHCy9k9aY';
 
   try {
