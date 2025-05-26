@@ -3,9 +3,7 @@ const supabase = createClient(
  'https://dgjthawzhygycyyfbvdh.supabase.co',
  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnanRoYXd6aHlneWN5eWZidmRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3OTQ4NzUsImV4cCI6MjA2MjM3MDg3NX0._9-RtrQNoowkXKscujLv3BtEsc82hfoJQy2BuVt2DR8'
 );
-
 const BOT_TOKEN = process.env.BOT_TOKEN;
-
 exports.handler = async (event, context) => {
  try {
    const update = JSON.parse(event.body);
@@ -45,7 +43,7 @@ exports.handler = async (event, context) => {
      const personalUrl = `https://coffee-shop-app-um48rx.flutterflow.app/?user_id=${user.id}`;
      console.log('Generated URL:', personalUrl);
      
-     // Отправляем сообщение с inline кнопкой
+     // Отправляем сообщение с inline кнопками
      const telegramResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
        method: 'POST',
        headers: {
@@ -53,11 +51,12 @@ exports.handler = async (event, context) => {
        },
        body: JSON.stringify({
          chat_id: chatId,
-         text: 'Добро пожаловать в наш кофе-шоп! ☕',
+         text: 'Welcome to our cannabis shop! 🌿',
          reply_markup: {
-           inline_keyboard: [[
-             { text: '🛍️ Открыть магазин', web_app: { url: personalUrl } }
-           ]]
+           inline_keyboard: [
+             [{ text: '🛒 Open Shop', web_app: { url: personalUrl } }],
+             [{ text: '📞 Contact Us', url: 'https://t.me/dophamine_the_mng' }]
+           ]
          }
        })
      });
