@@ -76,7 +76,7 @@ exports.handler = async (event, context) => {
     // Отправляем в Telegram
     console.log('Sending to Telegram...');
     const BOT_TOKEN = process.env.BOT_TOKEN;
-    const CHAT_ID = telegram_user_id.replace(/^tg_/, '').split('_')[0];
+    const CHAT_ID = '7121076642'; // твой реальный Telegram ID
 
     let orderMessage = '🛒 Новый заказ!\n\n';
     
