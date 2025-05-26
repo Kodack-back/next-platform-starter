@@ -78,11 +78,11 @@ exports.handler = async (event, context) => {
     const BOT_TOKEN = process.env.BOT_TOKEN;
     const CHAT_ID = telegram_user_id.replace(/^tg_/, '').split('_')[0];
 
-    let orderMessage = '*🛒 Новый заказ!*\n\n';
+    let orderMessage = '🛒 Новый заказ!\n\n';
     
     // Добавляем товары
     if (cartData && cartData.length > 0) {
-      orderMessage += '*Товары:*\n';
+      orderMessage += 'Товары:\n';
       let totalPrice = 0;
       
       cartData.forEach(item => {
@@ -90,17 +90,17 @@ exports.handler = async (event, context) => {
         totalPrice += (item.price_variant || 0) * (item.quantity || 1);
       });
       
-      orderMessage += `\n*Общая сумма:* ${totalPrice}B\n\n`;
+      orderMessage += `\nОбщая сумма: ${totalPrice}B\n\n`;
     } else {
-      orderMessage += '*Товары:* Корзина пуста\n\n';
+      orderMessage += 'Товары: Корзина пуста\n\n';
     }
 
     // Добавляем детали заказа
     const order = orderData && orderData.length > 0 ? orderData[0] : null;
-    orderMessage += `*Адрес доставки:* ${order?.delivery_address || 'Не указан'}\n`;
-    orderMessage += `*Контакт:* ${order?.contact_info || 'Не указан'}\n`;
-    orderMessage += `*Комментарий:* ${order?.comments || 'Без комментариев'}\n`;
-    orderMessage += `*ID пользователя:* ${telegram_user_id}`;
+    orderMessage += `Адрес доставки: ${order?.delivery_address || 'Не указан'}\n`;
+    orderMessage += `Контакт: ${order?.contact_info || 'Не указан'}\n`;
+    orderMessage += `Комментарий: ${order?.comments || 'Без комментариев'}\n`;
+    orderMessage += `ID пользователя: ${telegram_user_id}`;
 
     const telegramResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: 'POST',
@@ -110,7 +110,6 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         chat_id: CHAT_ID,
         text: orderMessage,
-        parse_mode: 'Markdown',
       }),
     });
 
