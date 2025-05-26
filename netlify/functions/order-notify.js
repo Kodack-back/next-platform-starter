@@ -1,12 +1,6 @@
-const { createClient } = require('@supabase/supabase-js');
-
-const supabaseUrl = 'https://ygmhyinqwgkjkhixisrb.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbWh5aW5xd2dramtoaXhpc3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ4MTA2MzAsImV4cCI6MjAzMDM4NjYzMH0.LOy5s4mLU3xf5jK2sBfhm6Fk3r8CaO8BPhcHCy9k9aY';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
+// Используем прямые HTTP запросы к Supabase REST API вместо клиента
 exports.handler = async (event, context) => {
-  // ДОБАВЛЯЕМ CORS HEADERS!
+  // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -29,43 +23,54 @@ exports.handler = async (event, context) => {
   
   console.log('User ID:', telegram_user_id);
 
-  try {
-    // Получаем данные корзины
-    console.log('Getting Cart data...');
-    const { data: cartData, error: cartError } = await supabase
-      .from('Cart')
-      .select('*')
-      .eq('telegram_user_id', telegram_user_id);
+  const supabaseUrl = 'https://ygmhyinqwgkjkhixisrb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbWh5aW5xd2dramtoaXhpc3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ4MTA2MzAsImV4cCI6MjAzMDM4NjYzMH0.LOy5s4mLU3xf5jK2sBfhm6Fk3r8CaO8BPhcHCy9k9aY';
 
-    if (cartError) {
-      console.error('Cart Error:', cartError);
+  try {
+    // Получаем данные корзины через REST API
+    console.log('Getting Cart data...');
+    const cartResponse = await fetch(`${supabaseUrl}/rest/v1/Cart?telegram_user_id=eq.${telegram_user_id}`, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!cartResponse.ok) {
+      console.error('Cart fetch failed:', cartResponse.status, cartResponse.statusText);
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: cartError.message }),
+        body: JSON.stringify({ error: `Cart fetch failed: ${cartResponse.statusText}` }),
       };
     }
 
+    const cartData = await cartResponse.json();
     console.log('Cart data:', cartData);
 
-    // Получаем данные заказа
+    // Получаем данные заказа через REST API
     console.log('Getting Order data...');
-    const { data: orderData, error: orderError } = await supabase
-      .from('user_coment')
-      .select('*')
-      .eq('telegram_user_id', telegram_user_id)
-      .order('created_at', { ascending: false })
-      .limit(1);
+    const orderResponse = await fetch(`${supabaseUrl}/rest/v1/user_coment?telegram_user_id=eq.${telegram_user_id}&order=created_at.desc&limit=1`, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-    if (orderError) {
-      console.error('Order Error:', orderError);
+    if (!orderResponse.ok) {
+      console.error('Order fetch failed:', orderResponse.status, orderResponse.statusText);
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: orderError.message }),
+        body: JSON.stringify({ error: `Order fetch failed: ${orderResponse.statusText}` }),
       };
     }
 
+    const orderData = await orderResponse.json();
     console.log('Order data:', orderData);
 
     // Отправляем в Telegram
